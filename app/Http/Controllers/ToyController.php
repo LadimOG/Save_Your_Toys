@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Toy;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ToyController extends Controller
 {
@@ -12,7 +13,9 @@ class ToyController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render("Toys/Index", [
+            "toys" => Toy::all()
+        ]);
     }
 
     /**
