@@ -13,7 +13,7 @@ class ToyController extends Controller
      */
     public function index()
     {
-        return Inertia::render("Toys/Index", [
+        return Inertia::render("Toy/Index", [
             "toys" => Toy::all()
         ]);
     }
