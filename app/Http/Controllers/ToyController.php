@@ -67,7 +67,17 @@ class ToyController extends Controller
      */
     public function update(Request $request, Toy $toy)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048'
+        ]);
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('toys', 'public');
+            $validated['image_path'] = '/storage/' . $path;
+            $toy->update($validated);
+        }
+        return redirect()->back();
     }
 
     /**
