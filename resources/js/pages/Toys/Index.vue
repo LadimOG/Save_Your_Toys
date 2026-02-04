@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
 import { Pencil } from 'lucide-vue-next';
+import { Trash } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -67,6 +68,12 @@ const editToy = (toy: Toy) => {
     form.name = toy.name;
     form.description = toy.description || '';
     isDialogOpen.value = true;
+};
+
+const deleteToy = (id: number) => {
+    if (confirm('Es-tu sur de vouloir supprimer ce jouet?')) {
+        form.delete(`/toys/${id}`);
+    }
 };
 </script>
 
@@ -181,14 +188,24 @@ const editToy = (toy: Toy) => {
                         />
                         <span v-else>📷 Pas de photo</span>
 
-                        <Button
-                            variant="secondary"
-                            size="icon"
-                            class="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100"
-                            @click="editToy(toy)"
-                        >
-                            <Pencil class="h-4 w-4" />
-                        </Button>
+                        <div class="flex justify-between">
+                            <Button
+                                variant="secondary"
+                                size="icon"
+                                class="absolute top-2 right-12 opacity-0 transition-opacity group-hover:opacity-100"
+                                @click="editToy(toy)"
+                            >
+                                <Pencil class="h-4 w-4" />
+                            </Button>
+                            <Button
+                                variant="secondary"
+                                size="icon"
+                                class="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100"
+                                @click="deleteToy(toy.id)"
+                            >
+                                <Trash class="h-4 w-4" />
+                            </Button>
+                        </div>
                     </div>
 
                     <CardHeader class="p-4">
