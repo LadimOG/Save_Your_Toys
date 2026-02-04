@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { Toy } from '@/types/toy';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { route } from 'ziggy-js';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import {
@@ -17,8 +15,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import type { Toy } from '@/types/toy';
 
-const props = defineProps<{
+defineProps<{
     toys: Toy[];
 }>();
 
@@ -29,13 +28,15 @@ const form = useForm({
     description: '',
     image: null as File | null,
 });
-console.log('Est-ce que Ziggy est là ?', typeof route);
 
 const submit = () => {
-    form.post(route('toy.store'), {
+    form.post('/toys', {
         onSuccess: () => {
             form.reset();
             isDialogOpen.value = false;
+        },
+        onError: (errors) => {
+            console.log('Erreurs Laravel :', errors); // <--- AJOUTE ÇA
         },
     });
 };
