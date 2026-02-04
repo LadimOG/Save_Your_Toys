@@ -49,7 +49,8 @@ class ToyController extends Controller
             $validated['image_path'] = '/storage/' . $path;
         }
         Toy::create($validated);
-        return redirect()->back();
+
+        return redirect()->back()->with("success", "Votre jouet a été ajouté!");
     }
 
     /**
