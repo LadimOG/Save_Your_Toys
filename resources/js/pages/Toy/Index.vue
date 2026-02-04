@@ -22,7 +22,7 @@ const props = defineProps<{
     toys: Toy[];
 }>();
 
-const isOpenDialog = ref(false);
+const isDialogOpen = ref(false);
 
 const form = useForm({
     name: '',
@@ -35,7 +35,7 @@ const submit = () => {
     form.post(route('toy.store'), {
         onSuccess: () => {
             form.reset();
-            isOpenDialog.value = false;
+            isDialogOpen.value = false;
         },
     });
 };

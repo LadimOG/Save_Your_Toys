@@ -7,6 +7,7 @@ use Laravel\Fortify\Features;
 
 Route::get('/', [ToyController::class, 'index'])->name('home');
 
+
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

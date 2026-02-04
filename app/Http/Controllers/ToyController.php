@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Toy;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -31,7 +32,17 @@ class ToyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048'
+        ]);
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('toys', 'public');
+            $validated['image_path'] = '/storage/' . $path;
+        }
+        Toy::created($validated);
+        return redirect()->back();
     }
 
     /**
