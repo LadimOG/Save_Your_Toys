@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
-import { Pencil } from 'lucide-vue-next';
-import { Trash } from 'lucide-vue-next';
+import { Pencil, Trash2 } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -216,7 +215,7 @@ const deleteToy = (id: number) => {
                                     class="h-9 w-9 opacity-0 shadow-md transition-opacity group-hover:opacity-100"
                                     @click="deleteToy(toy.id)"
                                 >
-                                    <Trash class="h-4 w-4" />
+                                    <Trash2 class="h-4 w-4" />
                                 </Button>
                                 <span
                                     class="pointer-events-none translate-y-1 text-[10px] font-bold tracking-wider text-slate-700 uppercase opacity-0 transition-all group-hover/trash:translate-y-0 group-hover/trash:opacity-100"
