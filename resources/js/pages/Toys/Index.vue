@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
+import { Pencil } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -22,6 +23,8 @@ defineProps<{
 }>();
 
 const isDialogOpen = ref(false);
+const isEditMode = ref(false);
+const editingToyId = ref<number | null>(null);
 
 const form = useForm({
     name: '',
@@ -30,15 +33,18 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post('/toys', {
-        onSuccess: () => {
-            form.reset();
-            isDialogOpen.value = false;
-        },
-        onError: (errors) => {
-            console.log('Erreurs Laravel :', errors); // <--- AJOUTE ÇA
-        },
-    });
+    if (isEditMode.value && editingToyId.value) {
+        form.transform((data) => ({
+            ...data,
+            _method: 'put',
+        })).post(`/toys/${editingToyId.value}`, {
+            onSuccess: () => closeModal(),
+        });
+    } else {
+        form.post('/toys', {
+            onSuccess: () => closeModal(),
+        });
+    }
 };
 
 const handleImageChange = (e: Event) => {
@@ -46,6 +52,21 @@ const handleImageChange = (e: Event) => {
     if (target.files) {
         form.image = target.files[0];
     }
+};
+
+const closeModal = () => {
+    isDialogOpen.value = false;
+    isEditMode.value = false;
+    editingToyId.value = null;
+    form.reset();
+};
+
+const editToy = (toy: Toy) => {
+    isEditMode.value = true;
+    editingToyId.value = toy.id;
+    form.name = toy.name;
+    form.description = toy.description || '';
+    isDialogOpen.value = true;
 };
 </script>
 
@@ -148,7 +169,7 @@ const handleImageChange = (e: Event) => {
                 <Card
                     v-for="toy in toys"
                     :key="toy.id"
-                    class="overflow-hidden transition-shadow hover:shadow-md"
+                    class="group relative overflow-hidden"
                 >
                     <div
                         class="flex aspect-video items-center justify-center bg-slate-200 text-slate-400"
@@ -159,6 +180,15 @@ const handleImageChange = (e: Event) => {
                             class="h-full w-full object-cover"
                         />
                         <span v-else>📷 Pas de photo</span>
+
+                        <Button
+                            variant="secondary"
+                            size="icon"
+                            class="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100"
+                            @click="editToy(toy)"
+                        >
+                            <Pencil class="h-4 w-4" />
+                        </Button>
                     </div>
 
                     <CardHeader class="p-4">
