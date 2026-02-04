@@ -1,12 +1,51 @@
 <script setup lang="ts">
 import type { Toy } from '@/types/toy';
-import { Head } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import { route } from 'ziggy-js';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 const props = defineProps<{
     toys: Toy[];
 }>();
+
+const isOpenDialog = ref(false);
+
+const form = useForm({
+    name: '',
+    description: '',
+    image: null as File | null,
+});
+console.log('Est-ce que Ziggy est là ?', typeof route);
+
+const submit = () => {
+    form.post(route('toy.store'), {
+        onSuccess: () => {
+            form.reset();
+            isOpenDialog.value = false;
+        },
+    });
+};
+
+const handleImageChange = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    if (target.files) {
+        form.image = target.files[0];
+    }
+};
 </script>
 
 <template>
@@ -28,11 +67,77 @@ const props = defineProps<{
                     </p>
                 </div>
 
-                <Button
-                    class="cursor-pointer bg-indigo-600 hover:bg-indigo-700"
-                >
-                    + Ajouter un jouet
-                </Button>
+                <Dialog v-model:open="isDialogOpen">
+                    <DialogTrigger as-child>
+                        <Button class="bg-indigo-600 hover:bg-indigo-700">
+                            + Ajouter un jouet
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent class="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Nouveau Trésor</DialogTitle>
+                            <DialogDescription>
+                                Remplis les détails du jouet ici. Clique sur
+                                sauvegarder une fois fini.
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <form @submit.prevent="submit" class="grid gap-4 py-4">
+                            <div class="grid gap-2">
+                                <Label for="name">Nom du jouet</Label>
+                                <Input
+                                    id="name"
+                                    v-model="form.name"
+                                    placeholder="ex: Ours en peluche"
+                                />
+                                <div
+                                    v-if="form.errors.name"
+                                    class="text-xs text-red-500"
+                                >
+                                    {{ form.errors.name }}
+                                </div>
+                            </div>
+
+                            <div class="grid gap-2">
+                                <Label for="description">Description</Label>
+                                <Textarea
+                                    id="description"
+                                    v-model="form.description"
+                                    placeholder="Il est tout doux..."
+                                />
+                            </div>
+
+                            <div class="grid gap-2">
+                                <Label for="image">Photo</Label>
+                                <Input
+                                    id="image"
+                                    type="file"
+                                    @change="handleImageChange"
+                                    accept="image/*"
+                                />
+                                <div
+                                    v-if="form.errors.image"
+                                    class="text-xs text-red-500"
+                                >
+                                    {{ form.errors.image }}
+                                </div>
+                            </div>
+
+                            <DialogFooter class="mt-4">
+                                <Button
+                                    type="submit"
+                                    :disabled="form.processing"
+                                >
+                                    {{
+                                        form.processing
+                                            ? 'Enregistrement...'
+                                            : 'Sauvegarder le jouet'
+                                    }}
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </header>
 
             <div
