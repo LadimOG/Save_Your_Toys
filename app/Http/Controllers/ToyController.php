@@ -37,6 +37,11 @@ class ToyController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|max:2048'
+        ], [
+            // Format : 'champ.règle' => 'Message'
+            'name.required' => 'Le nom du jouet est obligatoire.',
+            'name.string'   => 'Le nom doit être du texte.',
+            'name.max'      => 'Le nom est trop long (maximum 255 caractères).',
         ]);
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('toys', 'public');
