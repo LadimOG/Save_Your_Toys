@@ -188,23 +188,42 @@ const deleteToy = (id: number) => {
                         />
                         <span v-else>📷 Pas de photo</span>
 
-                        <div class="flex justify-between">
-                            <Button
-                                variant="secondary"
-                                size="icon"
-                                class="absolute top-2 right-12 opacity-0 transition-opacity group-hover:opacity-100"
-                                @click="editToy(toy)"
+                        <div class="absolute top-2 right-2 flex gap-1">
+                            <div
+                                class="group/item flex flex-col items-center gap-1"
                             >
-                                <Pencil class="h-4 w-4" />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="icon"
-                                class="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100"
-                                @click="deleteToy(toy.id)"
+                                <Button
+                                    variant="secondary"
+                                    size="icon"
+                                    class="h-9 w-9 opacity-0 shadow-md transition-opacity group-hover:opacity-100"
+                                    @click="editToy(toy)"
+                                >
+                                    <Pencil class="h-4 w-4" />
+                                </Button>
+                                <span
+                                    class="pointer-events-none translate-y-1 text-[10px] font-bold tracking-wider text-slate-700 uppercase opacity-0 transition-all group-hover/item:translate-y-0 group-hover/item:opacity-100"
+                                >
+                                    Modifier
+                                </span>
+                            </div>
+
+                            <div
+                                class="group/trash flex flex-col items-center gap-1"
                             >
-                                <Trash class="h-4 w-4" />
-                            </Button>
+                                <Button
+                                    variant="destructive"
+                                    size="icon"
+                                    class="h-9 w-9 opacity-0 shadow-md transition-opacity group-hover:opacity-100"
+                                    @click="deleteToy(toy.id)"
+                                >
+                                    <Trash class="h-4 w-4" />
+                                </Button>
+                                <span
+                                    class="pointer-events-none translate-y-1 text-[10px] font-bold tracking-wider text-slate-700 uppercase opacity-0 transition-all group-hover/trash:translate-y-0 group-hover/trash:opacity-100"
+                                >
+                                    Supprimer
+                                </span>
+                            </div>
                         </div>
                     </div>
 

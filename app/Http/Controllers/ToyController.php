@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Toy;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ToyController extends Controller
@@ -90,6 +91,11 @@ class ToyController extends Controller
      */
     public function destroy(Toy $toy)
     {
-        //
+        if ($toy->image_path) {
+            $path = str_replace('/storage/', '', $toy->image_path);
+            Storage::disk('public')->delete($path);
+        }
+        $toy->delete();
+        return redirect()->back();
     }
 }
