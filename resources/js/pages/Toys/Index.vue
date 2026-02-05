@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { Pencil, Trash2 } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import 'vue-sonner/style.css';
+import { Toaster, toast } from 'vue-sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import {
@@ -25,6 +27,21 @@ defineProps<{
 const isDialogOpen = ref(false);
 const isEditMode = ref(false);
 const editingToyId = ref<number | null>(null);
+const page = usePage();
+
+watch(
+    () => (page.props as any).flash?.success,
+    (message) => {
+        if (message) {
+            setTimeout(() => {
+                toast.success(message);
+            }, 100);
+            console.log((page.props as any).flash?.success);
+            (page.props as any).flash.success = null;
+        }
+    },
+    { immediate: true },
+);
 
 const form = useForm({
     name: '',
@@ -253,4 +270,5 @@ const deleteToy = (id: number) => {
             </div>
         </div>
     </div>
+    <Toaster position="top-center" richColors class="-z-50" />
 </template>

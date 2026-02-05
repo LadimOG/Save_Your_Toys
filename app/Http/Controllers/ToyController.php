@@ -84,7 +84,7 @@ class ToyController extends Controller
             $validated['image_path'] = '/storage/' . $path;
             $toy->update($validated);
         }
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Votre jouet a bien été modifié');
     }
 
     /**
@@ -97,6 +97,6 @@ class ToyController extends Controller
             Storage::disk('public')->delete($path);
         }
         $toy->delete();
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Le jouet a été bien supprimé');
     }
 }
