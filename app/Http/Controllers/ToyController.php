@@ -44,11 +44,17 @@ class ToyController extends Controller
             'name.string'   => 'Le nom doit être du texte.',
             'name.max'      => 'Le nom est trop long (maximum 255 caractères).',
         ]);
+
+        $createData =
+            [
+                'name' => $validated['name'],
+                'description' => $validated['description']
+            ];
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('toys', 'public');
-            $validated['image_path'] = '/storage/' . $path;
+            $createData['image_path'] = '/storage/' . $path;
         }
-        Toy::create($validated);
+        Toy::create($createData);
 
         return redirect()->back()->with("success", "Votre jouet a été ajouté!");
     }
@@ -79,11 +85,18 @@ class ToyController extends Controller
             'description' => 'nullable|string',
             'image' => 'nullable|image|max:2048'
         ]);
+
+        $updateData =
+            [
+                'name' => $validated['name'],
+                'description' => $validated['description']
+            ];
+
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('toys', 'public');
-            $validated['image_path'] = '/storage/' . $path;
-            $toy->update($validated);
+            $updateData['image_path'] = '/storage/' . $path;
         }
+        $toy->update($updateData);
         return redirect()->back()->with('success', 'Votre jouet a bien été modifié');
     }
 

@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
-import { Pencil, Trash2 } from 'lucide-vue-next';
 import { ref } from 'vue';
 import 'vue-sonner/style.css';
+import CardToy from '@/components/CardToy.vue';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -61,20 +60,15 @@ const closeModal = () => {
     isEditMode.value = false;
     editingToyId.value = null;
     form.reset();
+    form.clearErrors();
 };
 
-const editToy = (toy: Toy) => {
+const handleEditClick = (toy: Toy) => {
     isEditMode.value = true;
     editingToyId.value = toy.id;
     form.name = toy.name;
     form.description = toy.description || '';
     isDialogOpen.value = true;
-};
-
-const deleteToy = (id: number) => {
-    if (confirm('Es-tu sur de vouloir supprimer ce jouet?')) {
-        form.delete(`/toys/${id}`);
-    }
 };
 </script>
 
@@ -96,16 +90,27 @@ const deleteToy = (id: number) => {
 
             <Dialog v-model:open="isDialogOpen">
                 <DialogTrigger as-child>
-                    <Button class="bg-indigo-600 hover:bg-indigo-700">
+                    <Button
+                        class="bg-indigo-600 hover:bg-indigo-700"
+                        @click="
+                            isEditMode = false;
+                            form.reset();
+                        "
+                    >
                         + Ajouter un jouet
                     </Button>
                 </DialogTrigger>
                 <DialogContent class="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>Nouveau Trésor</DialogTitle>
+                        <DialogTitle>{{
+                            isEditMode ? 'Modifier le jouet' : 'Nouveau Trésor'
+                        }}</DialogTitle>
                         <DialogDescription>
-                            Remplis les détails du jouet ici. Clique sur
-                            sauvegarder une fois fini.
+                            {{
+                                isEditMode
+                                    ? 'Mettez à jour les informations de ce jouet.'
+                                    : 'Remplis les détails du jouet ici.'
+                            }}
                         </DialogDescription>
                     </DialogHeader>
 
@@ -168,74 +173,7 @@ const deleteToy = (id: number) => {
             v-if="toys.length > 0"
             class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
-            <Card
-                v-for="toy in toys"
-                :key="toy.id"
-                class="group relative overflow-hidden"
-            >
-                <div
-                    class="flex aspect-video items-center justify-center bg-slate-200 text-slate-400"
-                >
-                    <img
-                        v-if="toy.image_path"
-                        :src="toy.image_path"
-                        class="aspect-video w-full bg-white object-contain"
-                    />
-                    <span v-else>📷 Pas de photo</span>
-
-                    <div class="absolute top-2 right-2 flex gap-1">
-                        <div
-                            class="group/item flex flex-col items-center gap-1"
-                        >
-                            <Button
-                                variant="secondary"
-                                size="icon"
-                                class="h-9 w-9 opacity-0 shadow-md transition-opacity group-hover:opacity-100"
-                                @click="editToy(toy)"
-                            >
-                                <Pencil class="h-4 w-4" />
-                            </Button>
-                            <span
-                                class="pointer-events-none translate-y-1 text-[10px] font-bold tracking-wider text-slate-700 uppercase opacity-0 transition-all group-hover/item:translate-y-0 group-hover/item:opacity-100"
-                            >
-                                Modifier
-                            </span>
-                        </div>
-
-                        <div
-                            class="group/trash flex flex-col items-center gap-1"
-                        >
-                            <Button
-                                variant="destructive"
-                                size="icon"
-                                class="h-9 w-9 opacity-0 shadow-md transition-opacity group-hover:opacity-100"
-                                @click="deleteToy(toy.id)"
-                            >
-                                <Trash2 class="h-4 w-4" />
-                            </Button>
-                            <span
-                                class="pointer-events-none translate-y-1 text-[10px] font-bold tracking-wider text-slate-700 uppercase opacity-0 transition-all group-hover/trash:translate-y-0 group-hover/trash:opacity-100"
-                            >
-                                Supprimer
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <CardHeader class="p-4">
-                    <CardTitle class="text-xl font-semibold">{{
-                        toy.name
-                    }}</CardTitle>
-                </CardHeader>
-
-                <CardContent class="px-4 pb-4">
-                    <p class="line-clamp-2 text-sm text-slate-600">
-                        {{
-                            toy.description || 'Aucune description disponible.'
-                        }}
-                    </p>
-                </CardContent>
-            </Card>
+            <CardToy :toys="toys" @edit-toy="handleEditClick" />
         </div>
 
         <div
