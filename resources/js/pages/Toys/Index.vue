@@ -179,7 +179,7 @@ const deleteToy = (id: number) => {
                     <img
                         v-if="toy.image_path"
                         :src="toy.image_path"
-                        class="h-full w-full object-cover"
+                        class="aspect-video w-full bg-white object-contain"
                     />
                     <span v-else>📷 Pas de photo</span>
 

@@ -1,39 +1,22 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import Heading from '@/components/Heading.vue';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { toUrl } from '@/lib/utils';
-import { edit as editAppearance } from '@/routes/appearance';
-import { edit as editProfile } from '@/routes/profile';
-import { show } from '@/routes/two-factor';
-import { edit as editPassword } from '@/routes/user-password';
-import { type NavItem } from '@/types';
+import { show } from '@/routes/two-factor'; -->
+//import { type NavItem } from '@/types'; // import { edit as editAppearance }
+from '@/routes/appearance'; // import { edit as editProfile } from
+'@/routes/profile'; // import { edit as editPassword } from
+'@/routes/user-password'; // const sidebarNavItems: NavItem[] = [ // { // title:
+'Profile', // href: editProfile(), // }, // { // title: 'Password', // href:
+editPassword(), // }, // { // title: 'Two-Factor Auth', // href: show(), // },
+// { // title: 'Appearance', // href: editAppearance(), // }, // ]; const {
+isCurrentUrl } = useCurrentUrl();
+<!-- </script> -->
 
-const sidebarNavItems: NavItem[] = [
-    {
-        title: 'Profile',
-        href: editProfile(),
-    },
-    {
-        title: 'Password',
-        href: editPassword(),
-    },
-    {
-        title: 'Two-Factor Auth',
-        href: show(),
-    },
-    {
-        title: 'Appearance',
-        href: editAppearance(),
-    },
-];
-
-const { isCurrentUrl } = useCurrentUrl();
-</script>
-
-<template>
+<!-- <template>
     <div class="px-4 py-6">
         <Heading
             title="Settings"
@@ -73,4 +56,4 @@ const { isCurrentUrl } = useCurrentUrl();
             </div>
         </div>
     </div>
-</template>
+</template> -->
