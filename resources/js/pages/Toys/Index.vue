@@ -1,21 +1,10 @@
 <script setup lang="ts">
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import 'vue-sonner/style.css';
 import CardToy from '@/components/CardToy.vue';
+import ToyFormDialog from '@/components/ToyFormDialog.vue';
 import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import Layout from '@/layouts/Layout.vue';
 import type { Toy } from '@/types/toy';
 
@@ -27,47 +16,21 @@ const isDialogOpen = ref(false);
 const isEditMode = ref(false);
 const editingToyId = ref<number | null>(null);
 
-const form = useForm({
-    name: '',
-    description: '',
-    image: null as File | null,
-});
+const selectedToyData = ref({ name: '', description: '' });
 
-const submit = () => {
-    if (isEditMode.value && editingToyId.value) {
-        form.transform((data) => ({
-            ...data,
-            _method: 'put',
-        })).post(`/toys/${editingToyId.value}`, {
-            onSuccess: () => closeModal(),
-        });
-    } else {
-        form.post('/toys', {
-            onSuccess: () => closeModal(),
-        });
-    }
-};
-
-const handleImageChange = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    if (target.files) {
-        form.image = target.files[0];
-    }
-};
-
-const closeModal = () => {
-    isDialogOpen.value = false;
+const openCreateModal = () => {
     isEditMode.value = false;
     editingToyId.value = null;
-    form.reset();
-    form.clearErrors();
+    selectedToyData.value = { name: '', description: '' }; // Reset data
+    isDialogOpen.value = true;
 };
-
 const handleEditClick = (toy: Toy) => {
     isEditMode.value = true;
     editingToyId.value = toy.id;
-    form.name = toy.name;
-    form.description = toy.description || '';
+    selectedToyData.value = {
+        name: toy.name,
+        description: toy.description || '',
+    };
     isDialogOpen.value = true;
 };
 </script>
@@ -87,86 +50,18 @@ const handleEditClick = (toy: Toy) => {
                     Gère et répertorie tous les trésors de ton enfant.
                 </p>
             </div>
-
-            <Dialog v-model:open="isDialogOpen">
-                <DialogTrigger as-child>
-                    <Button
-                        class="bg-indigo-600 hover:bg-indigo-700"
-                        @click="
-                            isEditMode = false;
-                            form.reset();
-                        "
-                    >
-                        + Ajouter un jouet
-                    </Button>
-                </DialogTrigger>
-                <DialogContent class="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>{{
-                            isEditMode ? 'Modifier le jouet' : 'Nouveau Trésor'
-                        }}</DialogTitle>
-                        <DialogDescription>
-                            {{
-                                isEditMode
-                                    ? 'Mettez à jour les informations de ce jouet.'
-                                    : 'Remplis les détails du jouet ici.'
-                            }}
-                        </DialogDescription>
-                    </DialogHeader>
-
-                    <form @submit.prevent="submit" class="grid gap-4 py-4">
-                        <div class="grid gap-2">
-                            <Label for="name">Nom du jouet</Label>
-                            <Input
-                                id="name"
-                                v-model="form.name"
-                                placeholder="ex: Ours en peluche"
-                            />
-                            <div
-                                v-if="form.errors.name"
-                                class="text-xs text-red-500"
-                            >
-                                {{ form.errors.name }}
-                            </div>
-                        </div>
-
-                        <div class="grid gap-2">
-                            <Label for="description">Description</Label>
-                            <Textarea
-                                id="description"
-                                v-model="form.description"
-                                placeholder="Il est tout doux..."
-                            />
-                        </div>
-
-                        <div class="grid gap-2">
-                            <Label for="image">Photo</Label>
-                            <Input
-                                id="image"
-                                type="file"
-                                @change="handleImageChange"
-                                accept="image/*"
-                            />
-                            <div
-                                v-if="form.errors.image"
-                                class="text-xs text-red-500"
-                            >
-                                {{ form.errors.image }}
-                            </div>
-                        </div>
-
-                        <DialogFooter class="mt-4">
-                            <Button type="submit" :disabled="form.processing">
-                                {{
-                                    form.processing
-                                        ? 'Enregistrement...'
-                                        : 'Sauvegarder le jouet'
-                                }}
-                            </Button>
-                        </DialogFooter>
-                    </form>
-                </DialogContent>
-            </Dialog>
+            <Button
+                class="bg-indigo-600 hover:bg-indigo-700"
+                @click="openCreateModal"
+            >
+                + Ajouter un jouet
+            </Button>
+            <ToyFormDialog
+                v-model:open="isDialogOpen"
+                :is-edit-mode="isEditMode"
+                :toy-id="editingToyId"
+                :initial-data="selectedToyData"
+            />
         </header>
 
         <div

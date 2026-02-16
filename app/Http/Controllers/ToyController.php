@@ -97,6 +97,7 @@ class ToyController extends Controller
             $updateData['image_path'] = '/storage/' . $path;
         }
         $toy->update($updateData);
+
         return redirect()->back()->with('success', 'Votre jouet a bien été modifié');
     }
 
