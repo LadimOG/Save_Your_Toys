@@ -2,8 +2,8 @@
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import 'vue-sonner/style.css';
-import CardToy from '@/components/CardToy.vue';
-import ToyFormDialog from '@/components/ToyFormDialog.vue';
+import CardToy from '@/components/Toys/CardToy.vue';
+import ToyFormDialog from '@/components/Toys/ToyFormDialog.vue';
 import { Button } from '@/components/ui/button';
 import Layout from '@/layouts/Layout.vue';
 import type { Toy } from '@/types/toy';
@@ -80,5 +80,4 @@ const handleEditClick = (toy: Toy) => {
             </p>
         </div>
     </Layout>
-    <Toaster position="top-center" richColors class="-z-50" />
 </template>

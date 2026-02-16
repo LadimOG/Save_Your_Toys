@@ -3,14 +3,14 @@ import { router } from '@inertiajs/vue3';
 import { Pencil } from 'lucide-vue-next';
 import { Trash2 } from 'lucide-vue-next';
 import type { Toy } from '@/types/toy';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import {
     Card,
     CardTitle,
     CardHeader,
     CardContent,
     CardDescription,
-} from './ui/card';
+} from '../ui/card';
 defineProps<{
     toys: Toy[];
 }>();

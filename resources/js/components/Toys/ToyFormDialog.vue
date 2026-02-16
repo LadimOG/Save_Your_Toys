@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
 import { watch } from 'vue';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import {
     Dialog,
     DialogContent,
@@ -9,10 +9,10 @@ import {
     DialogTitle,
     DialogDescription,
     DialogFooter,
-} from './ui/dialog';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Textarea } from './ui/textarea';
+} from '../ui/dialog';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Textarea } from '../ui/textarea';
 
 const props = defineProps<{
     open: boolean;
@@ -27,7 +27,7 @@ const form = useForm({
     image: null as File | null,
 });
 
-const emit = defineEmits(['update:open', 'success']);
+const emit = defineEmits(['update:open']);
 
 watch(
     () => props.initialData,
@@ -39,17 +39,13 @@ watch(
 );
 
 const submit = () => {
+    const url = props.isEditMode ? `/toys/${props.toyId}` : '/toys';
+
     if (props.isEditMode && props.toyId) {
         form.transform((data) => ({
             ...data,
             _method: 'put',
-        })).post(`/toys/${props.toyId}`, {
-            onSuccess: () => {
-                emit('update:open', false);
-            },
-        });
-    } else {
-        form.post('/toys', {
+        })).post(url, {
             onSuccess: () => {
                 emit('update:open', false);
             },
