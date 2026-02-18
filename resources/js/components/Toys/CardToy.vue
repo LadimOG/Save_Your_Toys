@@ -12,7 +12,7 @@ import {
     CardDescription,
 } from '../ui/card';
 defineProps<{
-    toys: Toy[];
+    toy: Toy;
 }>();
 
 const emit = defineEmits(['editToy']);
@@ -28,11 +28,7 @@ const handleDelete = (id: number) => {
 };
 </script>
 <template>
-    <Card
-        v-for="toy in toys"
-        :key="toy.id"
-        class="group relative overflow-hidden"
-    >
+    <Card class="group relative overflow-hidden">
         <div
             class="flex aspect-video items-center justify-center bg-slate-200 text-slate-400"
         >

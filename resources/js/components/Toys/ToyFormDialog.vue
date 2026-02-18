@@ -12,6 +12,7 @@ import {
 } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { Spinner } from '../ui/spinner';
 import { Textarea } from '../ui/textarea';
 
 const props = defineProps<{
@@ -39,14 +40,17 @@ watch(
 );
 
 const submit = () => {
-    const url = props.isEditMode ? `/toys/${props.toyId}` : '/toys';
-
     if (props.isEditMode && props.toyId) {
         form.transform((data) => ({
             ...data,
             _method: 'put',
-        })).post(url, {
+        })).post(`/toys/${props.toyId}`, {
+            onSuccess: () => emit('update:open', false),
+        });
+    } else {
+        form.post('/toys', {
             onSuccess: () => {
+                form.reset();
                 emit('update:open', false);
             },
         });
@@ -114,6 +118,7 @@ const handleImageChange = (e: Event) => {
 
                 <DialogFooter class="mt-4">
                     <Button type="submit" :disabled="form.processing">
+                        <Spinner v-if="form.processing" />
                         {{
                             form.processing
                                 ? 'Enregistrement...'

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
-import NavFooter from '@/components/NavFooter.vue';
-import NavMain from '@/components/NavMain.vue';
+import { CirclePlus } from 'lucide-vue-next';
+import { LogOut } from 'lucide-vue-next';
+import { ref } from 'vue';
+import { route } from 'ziggy-js';
 import NavUser from '@/components/NavUser.vue';
+import ToyFormDialog from '@/components/Toys/ToyFormDialog.vue';
 import {
     Sidebar,
     SidebarContent,
@@ -13,30 +15,20 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
-import { type NavItem } from '@/types';
+
 import AppLogo from './AppLogo.vue';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
+const isDialogOpen = ref(false);
+const isEditMode = ref(false);
+const editingToyId = ref<number | null>(null);
+const selectedToyData = ref({ name: '', description: '' });
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Github Repo',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: BookOpen,
-    },
-];
+const openAddToyModal = () => {
+    isEditMode.value = false;
+    editingToyId.value = null;
+    selectedToyData.value = { name: '', description: '' };
+    isDialogOpen.value = true;
+};
 </script>
 
 <template>
@@ -45,7 +37,7 @@ const footerNavItems: NavItem[] = [
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="dashboard()">
+                        <Link href="/toys">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>
@@ -54,13 +46,33 @@ const footerNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <SidebarMenuButton @click="openAddToyModal">
+                <CirclePlus class="h-4 w-4" />
+                <span>Ajouter un jouet</span>
+            </SidebarMenuButton>
         </SidebarContent>
 
         <SidebarFooter>
-            <NavFooter :items="footerNavItems" />
             <NavUser />
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton
+                        as-child
+                        class="text-red-600 hover:bg-red-50 hover:text-red-700"
+                    >
+                        <Link :href="route('logout')" method="post" as="button">
+                            <LogOut class="h-4 w-4" />
+                            <span>Déconnexion</span>
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+            </SidebarMenu>
         </SidebarFooter>
     </Sidebar>
-    <slot />
+    <ToyFormDialog
+        v-model:open="isDialogOpen"
+        :is-edit-mode="isEditMode"
+        :toy-id="editingToyId"
+        :initial-data="selectedToyData"
+    />
 </template>

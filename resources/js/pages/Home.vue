@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
+
+const page = usePage();
 </script>
 
 <template>
@@ -23,10 +26,17 @@ import { Link } from '@inertiajs/vue3';
                         class="flex items-center justify-center md:justify-start"
                     >
                         <Link
-                            href="/login"
+                            v-if="!page.props.auth.user"
+                            :href="route('login')"
                             class="rounded-sm bg-black p-2 text-sm font-medium text-amber-50 hover:bg-gray-800"
                             >Commencer
                         </Link>
+                        <Link
+                            v-else
+                            href="/toys"
+                            class="rounded-sm bg-indigo-600 p-2 text-sm font-medium text-white hover:bg-indigo-700"
+                            >Voir mes jouets</Link
+                        >
                     </div>
                 </div>
 

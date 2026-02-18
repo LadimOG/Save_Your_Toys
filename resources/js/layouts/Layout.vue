@@ -2,17 +2,22 @@
 import { usePage } from '@inertiajs/vue3';
 import { watch } from 'vue';
 import { Toaster, toast } from 'vue-sonner';
+import AppSidebar from '@/components/AppSidebar.vue';
+import {
+    SidebarProvider,
+    SidebarInset,
+    SidebarTrigger,
+} from '@/components/ui/sidebar';
 
 const page = usePage();
 
 watch(
-    () => (page.props as any).flash?.success,
-    (message) => {
-        if (message) {
+    () => page.props.flash,
+    (flash: any) => {
+        if (flash?.success) {
             setTimeout(() => {
-                toast.success(message);
+                toast.success(flash.success);
             }, 100);
-            (page.props as any).flash.success = null;
         }
     },
     { immediate: true },
@@ -20,10 +25,21 @@ watch(
 </script>
 
 <template>
-    <div class="min-h-screen p-6">
-        <div class="mx-auto max-w-6xl">
-            <slot />
-        </div>
-    </div>
+    <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset class="flex h-screen flex-col overflow-hidden">
+            <header
+                class="flex h-16 shrink-0 items-center gap-2 border-b px-4 transition-[width,height] ease-linear"
+            >
+                <SidebarTrigger />
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <div class="mx-auto max-w-6xl">
+                    <slot />
+                </div>
+            </main>
+        </SidebarInset>
+    </SidebarProvider>
     <Toaster position="top-center" richColors />
 </template>

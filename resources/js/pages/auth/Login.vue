@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Form, Head } from '@inertiajs/vue3';
+import {Form, Head} from '@inertiajs/vue3';
 import InputError from '@/components/InputError.vue';
 import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,9 @@ defineProps<{
     canRegister: boolean;
 }>();
 </script>
+
+
+
 
 <template>
     <AuthBase
@@ -105,6 +108,6 @@ defineProps<{
                 Don't have an account?
                 <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
             </div>
-        </Form>
+        </FORM>
     </AuthBase>
 </template>
