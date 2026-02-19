@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
+use Intervention\Image\Laravel\Facades\Image;
+
 class ToyController extends Controller
 {
     /**
@@ -37,7 +39,7 @@ class ToyController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048'
+            'image' => 'nullable|image|max:50000'
         ], [
             // Format : 'champ.règle' => 'Message'
             'name.required' => 'Le nom du jouet est obligatoire.',
@@ -50,10 +52,24 @@ class ToyController extends Controller
                 'name' => $validated['name'],
                 'description' => $validated['description']
             ];
+
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('toys', 'public');
-            $createData['image_path'] = '/storage/' . $path;
+            $file = $request->file('image');
+
+            //destination et nom de l'image
+            $fileName = 'toys/' . uniqid() . '.webp';
+
+            //compression de l'image
+            $compressedImage = Image::read($file)->scale(width: 1000)->toWebp(60);
+
+            //enregistrement de l'image'
+            Storage::disk('public')->put($fileName, $compressedImage);
+
+            //ajout du chemin pour la bd
+            $createData['image_path'] = '/storage/' . $fileName;
         }
+
+        //stockage du titre description et le chemin de l'image dans la db
         Toy::create($createData);
 
         return redirect()->back()->with("success", "Votre jouet a été ajouté!");

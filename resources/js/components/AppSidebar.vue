@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { CirclePlus } from 'lucide-vue-next';
-import { LogOut } from 'lucide-vue-next';
+import { CirclePlus, LogOut, Home } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { route } from 'ziggy-js';
 import NavUser from '@/components/NavUser.vue';
@@ -14,6 +13,8 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarGroup,
+    SidebarGroupLabel,
 } from '@/components/ui/sidebar';
 
 import AppLogo from './AppLogo.vue';
@@ -46,10 +47,26 @@ const openAddToyModal = () => {
         </SidebarHeader>
 
         <SidebarContent>
-            <SidebarMenuButton @click="openAddToyModal">
-                <CirclePlus class="h-4 w-4" />
-                <span>Ajouter un jouet</span>
-            </SidebarMenuButton>
+            <SidebarGroup>
+                <SidebarGroupLabel>Platform</SidebarGroupLabel>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton @click="openAddToyModal">
+                            <CirclePlus />
+                            <span>Ajouter un jouet</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+
+                    <SidebarMenuItem>
+                        <SidebarMenuButton as-child>
+                            <Link href="/">
+                                <Home />
+                                Home
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarGroup>
         </SidebarContent>
 
         <SidebarFooter>
