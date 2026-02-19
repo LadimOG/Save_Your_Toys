@@ -32,6 +32,7 @@ watch(
                 class="flex h-16 shrink-0 items-center gap-2 border-b px-4 transition-[width,height] ease-linear"
             >
                 <SidebarTrigger />
+                <h1 class="text-2xl font-bold">Le Coffre à Jouet</h1>
             </header>
 
             <main class="flex-1 overflow-y-auto p-6">
