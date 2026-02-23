@@ -47,11 +47,7 @@ class ToyController extends Controller
             'name.max'      => 'Le nom est trop long (maximum 255 caractères).',
         ]);
 
-        $createData =
-            [
-                'name' => $validated['name'],
-                'description' => $validated['description']
-            ];
+        $toyData = collect($validated)->except('image')->toArray();
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
@@ -66,11 +62,11 @@ class ToyController extends Controller
             Storage::disk('public')->put($fileName, $compressedImage);
 
             //ajout du chemin pour la bd
-            $createData['image_path'] = '/storage/' . $fileName;
+            $toyData['image_path'] = '/storage/' . $fileName;
         }
 
         //stockage du titre description et le chemin de l'image dans la db
-        Toy::create($createData);
+        Toy::create($toyData);
 
         return redirect()->back()->with("success", "Votre jouet a été ajouté!");
     }

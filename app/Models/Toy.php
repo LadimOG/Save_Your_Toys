@@ -12,6 +12,12 @@ class Toy extends Model
     protected $fillable = [
         'name',
         'description',
-        'image_path'
+        'image_path',
+        'child_id'
     ];
+
+    public function child()
+    {
+        return $this->belongsTo(Child::class);
+    }
 }
