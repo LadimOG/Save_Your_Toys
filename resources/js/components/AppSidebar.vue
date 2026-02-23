@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { CirclePlus, LogOut, Home } from 'lucide-vue-next';
+import { UserPlus, LogOut, Home } from 'lucide-vue-next';
 import { ref } from 'vue';
 import { route } from 'ziggy-js';
 import NavUser from '@/components/NavUser.vue';
@@ -16,19 +16,24 @@ import {
     SidebarGroup,
     SidebarGroupLabel,
 } from '@/components/ui/sidebar';
-
 import AppLogo from './AppLogo.vue';
+import ChildAddFormDialog from './Child/ChildAddFormDialog.vue';
 
 const isDialogOpen = ref(false);
 const isEditMode = ref(false);
+const isDialogChildAddOpen = ref(false);
 const editingToyId = ref<number | null>(null);
 const selectedToyData = ref({ name: '', description: '' });
 
-const openAddToyModal = () => {
-    isEditMode.value = false;
-    editingToyId.value = null;
-    selectedToyData.value = { name: '', description: '' };
-    isDialogOpen.value = true;
+// const openAddToyModal = () => {
+//     isEditMode.value = false;
+//     editingToyId.value = null;
+//     selectedToyData.value = { name: '', description: '' };
+//     isDialogOpen.value = true;
+// };
+
+const openAddChild = () => {
+    isDialogChildAddOpen.value = true;
 };
 </script>
 
@@ -51,9 +56,9 @@ const openAddToyModal = () => {
                 <SidebarGroupLabel>Platform</SidebarGroupLabel>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton @click="openAddToyModal">
-                            <CirclePlus />
-                            <span>Ajouter un jouet</span>
+                        <SidebarMenuButton @click="openAddChild">
+                            <UserPlus />
+                            <span>Ajouter un enfant</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
 
@@ -92,4 +97,5 @@ const openAddToyModal = () => {
         :toy-id="editingToyId"
         :initial-data="selectedToyData"
     />
+    <ChildAddFormDialog v-model:open="isDialogChildAddOpen" />
 </template>
