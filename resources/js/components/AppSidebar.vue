@@ -1,39 +1,48 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import { UserPlus, LogOut, Home } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
+import { Baby, ChevronDown, LogOut, UserPlus } from 'lucide-vue-next';
+import { computed, ref, watch } from 'vue';
 import { route } from 'ziggy-js';
 import NavUser from '@/components/NavUser.vue';
-import ToyFormDialog from '@/components/Toys/ToyFormDialog.vue';
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarGroup,
-    SidebarGroupLabel,
-} from '@/components/ui/sidebar';
 import AppLogo from './AppLogo.vue';
 import ChildAddFormDialog from './Child/ChildAddFormDialog.vue';
+import ItemSidebarMenu from './Child/ItemSidebarMenu.vue';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from './ui/collapsible';
+import {
+    Sidebar,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuItem,
+    SidebarMenuButton,
+    SidebarGroupLabel,
+    SidebarGroup,
+    SidebarFooter,
+    SidebarContent,
+    SidebarMenuSub,
+} from './ui/sidebar';
 
-const isDialogOpen = ref(false);
-const isEditMode = ref(false);
-const isDialogChildAddOpen = ref(false);
-const editingToyId = ref<number | null>(null);
-const selectedToyData = ref({ name: '', description: '' });
+const childDialogOpen = ref(false);
+const isExpanded = ref(false);
+const page = usePage();
 
-// const openAddToyModal = () => {
-//     isEditMode.value = false;
-//     editingToyId.value = null;
-//     selectedToyData.value = { name: '', description: '' };
-//     isDialogOpen.value = true;
-// };
+const childList = computed(() => page.props.children as any[]);
 
-const openAddChild = () => {
-    isDialogChildAddOpen.value = true;
+watch(
+    () => page.props.children as any,
+    (newList, oldList) => {
+        if (newList && oldList && newList.length > oldList.length) {
+            isExpanded.value = true;
+        }
+    },
+    { deep: true },
+);
+
+const handleAddChild = () => {
+    childDialogOpen.value = true;
 };
 </script>
 
@@ -43,7 +52,7 @@ const openAddChild = () => {
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link href="/toys">
+                        <Link href="#">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>
@@ -53,23 +62,41 @@ const openAddChild = () => {
 
         <SidebarContent>
             <SidebarGroup>
-                <SidebarGroupLabel>Platform</SidebarGroupLabel>
+                <SidebarGroupLabel>Gestion</SidebarGroupLabel>
                 <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton @click="openAddChild">
-                            <UserPlus />
-                            <span>Ajouter un enfant</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
+                    <Collapsible v-model:open="isExpanded">
+                        <SidebarMenuItem>
+                            <CollapsibleTrigger as-child>
+                                <SidebarMenuButton tooltip="Mes Enfants">
+                                    <Baby />
+                                    <span>Mes Enfants</span>
+                                    <ChevronDown />
+                                </SidebarMenuButton>
+                            </CollapsibleTrigger>
 
-                    <SidebarMenuItem>
-                        <SidebarMenuButton as-child>
-                            <Link href="/">
-                                <Home />
-                                Home
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
+                            <CollapsibleContent>
+                                <SidebarMenuSub>
+                                    <ItemSidebarMenu
+                                        v-for="child in childList"
+                                        :key="child.id"
+                                        :child="child"
+                                    />
+
+                                    <SidebarMenuItem class="mt-2">
+                                        <SidebarMenuButton
+                                            @click="handleAddChild"
+                                        >
+                                            <UserPlus class="size-4" />
+                                            <span
+                                                class="truncate text-xs text-muted-foreground italic"
+                                                >Ajouter un enfant</span
+                                            >
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                </SidebarMenuSub>
+                            </CollapsibleContent>
+                        </SidebarMenuItem>
+                    </Collapsible>
                 </SidebarMenu>
             </SidebarGroup>
         </SidebarContent>
@@ -91,11 +118,5 @@ const openAddChild = () => {
             </SidebarMenu>
         </SidebarFooter>
     </Sidebar>
-    <ToyFormDialog
-        v-model:open="isDialogOpen"
-        :is-edit-mode="isEditMode"
-        :toy-id="editingToyId"
-        :initial-data="selectedToyData"
-    />
-    <ChildAddFormDialog v-model:open="isDialogChildAddOpen" />
+    <ChildAddFormDialog v-model:open="childDialogOpen" />
 </template>

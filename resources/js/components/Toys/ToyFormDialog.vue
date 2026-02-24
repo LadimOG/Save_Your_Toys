@@ -20,12 +20,14 @@ const props = defineProps<{
     isEditMode: boolean;
     toyId: number | null;
     initialData: { name: string; description: string };
+    childId: number;
 }>();
 
 const form = useForm({
     name: props.initialData.name,
     description: props.initialData.description,
     image: null as File | null,
+    child_id: props.childId,
 });
 
 const emit = defineEmits(['update:open']);
@@ -38,6 +40,12 @@ watch(
     },
     { deep: true },
 );
+watch(
+    () => props.childId,
+    (newId) => {
+        form.child_id = newId;
+    },
+);
 
 const submit = () => {
     if (props.isEditMode && props.toyId) {
@@ -45,7 +53,10 @@ const submit = () => {
             ...data,
             _method: 'put',
         })).post(`/toys/${props.toyId}`, {
-            onSuccess: () => emit('update:open', false),
+            onSuccess: () => {
+                form.image = null;
+                emit('update:open', false);
+            },
         });
     } else {
         form.post('/toys', {

@@ -4,16 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Child;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
-class ChilController extends Controller
+class ChildController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
-    }
+    public function index() {}
 
     /**
      * Show the form for creating a new resource.
@@ -28,9 +26,15 @@ class ChilController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'require|string|max:255'
-        ]);
+
+        $validated = $request->validate(
+            [
+                'name' => 'required|string|max:255'
+            ],
+            [
+                'name' => 'Vous devez ajouter un nom'
+            ]
+        );
 
         Child::create($validated);
 
@@ -40,9 +44,15 @@ class ChilController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Child $child)
     {
-        //
+        return Inertia::render('Child/Show', [
+            'child' => [
+                'id' => $child->id,
+                'name' => $child->name
+            ],
+            'toys' => $child->toys()->latest()->get(),
+        ]);
     }
 
     /**
@@ -64,8 +74,9 @@ class ChilController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Child $child)
     {
-        //
+        $child->delete();
+        return redirect()->back()->with('success', "Votre enfant a bien été suprimer");
     }
 }

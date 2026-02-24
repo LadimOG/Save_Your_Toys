@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
+
 import { Button } from '../ui/button';
 import {
     Dialog,
@@ -24,7 +24,7 @@ const form = useForm({
 const emit = defineEmits(['update:open']);
 
 const submit = () => {
-    form.post(route('children.store'), {
+    form.post('children', {
         onSuccess: () => {
             form.reset();
             emit('update:open', false);
@@ -35,13 +35,15 @@ const submit = () => {
 <template>
     <Dialog :open="open" @update:open="emit('update:open', $event)">
         <DialogContent>
-            <form @submit="submit">
+            <form @submit.prevent="submit">
                 <DialogHeader>
-                    <DialogTitle> </DialogTitle>
-                    <DialogDescription></DialogDescription>
+                    <DialogTitle>Nom de votre enfant </DialogTitle>
+                    <DialogDescription>
+                        Veuillez inscrire le nom de votre enfant
+                    </DialogDescription>
                 </DialogHeader>
 
-                <div class="grid gap-2">
+                <div class="mt-4 grid gap-2">
                     <Label for="name">Nom de l'enfant'</Label>
                     <Input
                         id="name"

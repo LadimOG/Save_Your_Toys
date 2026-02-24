@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Child;
 use App\Models\Toy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -14,13 +15,7 @@ class ToyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $toys = Toy::latest()->get();
-        return Inertia::render("Toys/Index", [
-            "toys" => $toys
-        ]);
-    }
+    public function index() {}
 
     /**
      * Show the form for creating a new resource.
@@ -39,7 +34,8 @@ class ToyController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:50000'
+            'image' => 'nullable|image|max:50000',
+            'child_id' => 'required|exists:children,id'
         ], [
             // Format : 'champ.règle' => 'Message'
             'name.required' => 'Le nom du jouet est obligatoire.',
@@ -74,9 +70,12 @@ class ToyController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Toy $toy)
+    public function show(Child $child)
     {
-        //
+        return Inertia::render("Children/Show", [
+            "child" => $child,
+            "toys"  => $child->toys()->latest()->get() // Récupère uniquement les jouets de cet enfant
+        ]);
     }
 
     /**

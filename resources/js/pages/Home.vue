@@ -33,10 +33,11 @@ const page = usePage();
                         </Link>
                         <Link
                             v-else
-                            href="/toys"
+                            :href="route('dashboard.index')"
                             class="rounded-sm bg-indigo-600 p-2 text-sm font-medium text-white hover:bg-indigo-700"
-                            >Voir mes jouets</Link
                         >
+                            Voir mes jouets
+                        </Link>
                     </div>
                 </div>
 

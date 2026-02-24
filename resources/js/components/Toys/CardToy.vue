@@ -35,7 +35,7 @@ const handleDelete = (id: number) => {
             <img
                 v-if="toy.image_path"
                 :src="toy.image_path"
-                class="aspect-video w-full bg-white object-contain"
+                class="aspect-video w-full bg-white object-cover"
             />
             <span v-else>📷 Pas de photo</span>
 
