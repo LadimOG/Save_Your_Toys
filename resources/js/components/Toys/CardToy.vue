@@ -11,6 +11,7 @@ import {
     CardContent,
     CardDescription,
 } from '../ui/card';
+
 defineProps<{
     toy: Toy;
 }>();
@@ -35,7 +36,7 @@ const handleDelete = (id: number) => {
             <img
                 v-if="toy.image_path"
                 :src="toy.image_path"
-                class="aspect-video w-full bg-white object-cover"
+                class="aspect-video w-full bg-white object-contain"
             />
             <span v-else>📷 Pas de photo</span>
 
@@ -45,7 +46,7 @@ const handleDelete = (id: number) => {
                         variant="secondary"
                         size="icon"
                         class="h-9 w-9 opacity-0 shadow-md transition-opacity group-hover:opacity-100"
-                        @click="handleEdit(toy)"
+                        @click.stop="handleEdit(toy)"
                     >
                         <Pencil class="h-4 w-4" />
                     </Button>
@@ -61,7 +62,7 @@ const handleDelete = (id: number) => {
                         variant="destructive"
                         size="icon"
                         class="h-9 w-9 opacity-0 shadow-md transition-opacity group-hover:opacity-100"
-                        @click="handleDelete(toy.id)"
+                        @click.stop="handleDelete(toy.id)"
                     >
                         <Trash2 class="h-4 w-4" />
                     </Button>
@@ -75,7 +76,9 @@ const handleDelete = (id: number) => {
         </div>
 
         <CardHeader class="p-4">
-            <CardTitle class="text-xl font-semibold">{{ toy.name }}</CardTitle>
+            <CardTitle class="text-xl font-semibold first-letter:uppercase">{{
+                toy.name
+            }}</CardTitle>
         </CardHeader>
 
         <CardContent class="px-4 pb-4">

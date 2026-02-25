@@ -1,31 +1,76 @@
 <script setup lang="ts">
-//import { ref } from 'vue';
-//import CardToy from '@/components/Toys/CardToy.vue';
-//import ToyFormDialog from '@/components/Toys/ToyFormDialog.vue';
+import { Head } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import CardToy from '@/components/Toys/CardToy.vue';
+import ToyFormDialog from '@/components/Toys/ToyFormDialog.vue';
+import { Button } from '@/components/ui/button';
 import Layout from '@/layouts/Layout.vue';
 import type { Toy } from '@/types/toy';
 
-// const isDialogOpen = ref(false);
-// const isEditMode = ref(false);
-// const editingToyId = ref<number | null>(null);
-// const selectedToyData = ref({ name: '', description: '' });
+const isDialogOpen = ref(false);
+const editMode = ref(false);
+const toyId = ref<number | null>(null);
+const initialData = ref({
+    name: '',
+    description: '',
+});
 
 defineProps<{
-    child: {
-        name: string;
-        id: number;
-    };
+    child?: any;
     toys: Toy[];
 }>();
-// const handleEditClick = (toy: Toy) => {
-//     isEditMode.value = true;
-//     editingToyId.value = toy.id;
-//     selectedToyData.value = {
-//         name: toy.name,
-//         description: toy.description || '',
-//     };
-//     isDialogOpen.value = true;
-// };
+
+const handleEditClick = (toy: Toy) => {
+    editMode.value = true;
+    toyId.value = toy.id;
+    initialData.value = {
+        name: toy.name,
+        description: toy.description || '',
+    };
+    isDialogOpen.value = true;
+};
+
+const handleDialogOpen = () => {
+    isDialogOpen.value = true;
+};
 </script>
 
-<template></template>
+<template>
+    <Head :title="`Coffre à jouet de ${child.name}`" />
+    <Layout>
+        <div class="">
+            <div
+                class="flex w-full justify-between rounded-xl bg-slate-100 p-4"
+            >
+                <h2>Le coffre a jouet de {{ child.name }}</h2>
+
+                <Button
+                    @click="handleDialogOpen"
+                    type="button"
+                    class="rounded-sm bg-indigo-600 p-2 text-sm font-medium text-white hover:bg-indigo-700"
+                >
+                    Ajouter un jouet
+                </Button>
+            </div>
+            <div
+                class="mt-2 grid grid-cols-1 gap-6 rounded-xl bg-slate-100 p-3 sm:grid-cols-2 lg:grid-cols-3"
+            >
+                <p v-if="toys.length === 0">Aucun jouet n'a été ajouté !</p>
+
+                <CardToy
+                    v-for="toy in toys"
+                    :key="toy.id"
+                    :toy="toy"
+                    @edit-toy="handleEditClick(toy)"
+                />
+            </div>
+        </div>
+        <ToyFormDialog
+            v-model:open="isDialogOpen"
+            :isEditMode="editMode"
+            :toyId="toyId"
+            :initialData="initialData"
+            :childId="child.id"
+        />
+    </Layout>
+</template>

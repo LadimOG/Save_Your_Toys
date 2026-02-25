@@ -31,6 +31,18 @@ const page = usePage();
 
 const childList = computed(() => page.props.children as any[]);
 
+console.log(page.url);
+
+watch(
+    () => page.url,
+    (newPath) => {
+        if (newPath.startsWith('/children')) {
+            isExpanded.value = true;
+        }
+    },
+    { immediate: true },
+);
+
 watch(
     () => page.props.children as any,
     (newList, oldList) => {
@@ -38,7 +50,7 @@ watch(
             isExpanded.value = true;
         }
     },
-    { deep: true },
+    { immediate: true },
 );
 
 const handleAddChild = () => {
@@ -52,7 +64,7 @@ const handleAddChild = () => {
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link href="#">
+                        <Link href="/">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>
@@ -64,13 +76,18 @@ const handleAddChild = () => {
             <SidebarGroup>
                 <SidebarGroupLabel>Gestion</SidebarGroupLabel>
                 <SidebarMenu>
-                    <Collapsible v-model:open="isExpanded">
+                    <Collapsible
+                        v-model:open="isExpanded"
+                        class="group/collapsible"
+                    >
                         <SidebarMenuItem>
                             <CollapsibleTrigger as-child>
                                 <SidebarMenuButton tooltip="Mes Enfants">
                                     <Baby />
                                     <span>Mes Enfants</span>
-                                    <ChevronDown />
+                                    <ChevronDown
+                                        class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180"
+                                    />
                                 </SidebarMenuButton>
                             </CollapsibleTrigger>
 
@@ -108,6 +125,7 @@ const handleAddChild = () => {
                     <SidebarMenuButton
                         as-child
                         class="text-red-600 hover:bg-red-50 hover:text-red-700"
+                        tooltip="Déconnexion"
                     >
                         <Link :href="route('logout')" method="post" as="button">
                             <LogOut class="h-4 w-4" />

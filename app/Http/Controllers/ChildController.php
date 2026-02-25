@@ -46,7 +46,7 @@ class ChildController extends Controller
      */
     public function show(Child $child)
     {
-        return Inertia::render('Child/Show', [
+        return Inertia::render('Children/Show', [
             'child' => [
                 'id' => $child->id,
                 'name' => $child->name
