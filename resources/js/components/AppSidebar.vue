@@ -99,7 +99,7 @@ const handleAddChild = () => {
 
                                     <SidebarMenuItem class="mt-2">
                                         <SidebarMenuButton
-                                            @click="handleAddChild"
+                                            @click.stop="handleAddChild"
                                         >
                                             <UserPlus class="size-4" />
                                             <span

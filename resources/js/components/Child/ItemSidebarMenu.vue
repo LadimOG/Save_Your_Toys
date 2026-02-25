@@ -28,7 +28,7 @@ const handleDelete = (id: number) => {
 
                 <Trash2
                     @click.stop.prevent="handleDelete(child.id)"
-                    class="ml-auto size-4 cursor-pointer text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-red-500"
+                    class="ml-auto size-4 cursor-pointer transition-opacity hover:text-red-500"
                 />
             </Link>
         </SidebarMenuButton>

@@ -8,6 +8,7 @@ import {
     SidebarInset,
     SidebarTrigger,
 } from '@/components/ui/sidebar';
+import 'vue-sonner/style.css';
 
 const page = usePage();
 
@@ -20,7 +21,7 @@ watch(
             }, 100);
         }
     },
-    { immediate: true },
+    { immediate: true, deep: true },
 );
 </script>
 

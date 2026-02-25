@@ -43,13 +43,15 @@ const handleDialogOpen = () => {
 </script>
 
 <template>
-    <Head :title="`Coffre à jouet de ${child.name}`" />
+    <Head :title="`Coffre de ${child.name}`" />
     <Layout>
         <div class="">
             <div
                 class="flex w-full justify-between rounded-xl bg-slate-100 p-4"
             >
-                <h2>Le coffre a jouet de {{ child.name }}</h2>
+                <h2 class="text-xl font-semibold">
+                    Coffre de {{ child.name }}
+                </h2>
 
                 <Button
                     @click="handleDialogOpen"

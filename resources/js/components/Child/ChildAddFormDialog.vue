@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
-
+import { route } from 'ziggy-js';
 import { Button } from '../ui/button';
 import {
     Dialog,
@@ -24,10 +24,10 @@ const form = useForm({
 const emit = defineEmits(['update:open']);
 
 const submit = () => {
-    form.post('children', {
+    form.post(route('children.store'), {
         onSuccess: () => {
-            form.reset();
             emit('update:open', false);
+            form.reset();
         },
     });
 };
