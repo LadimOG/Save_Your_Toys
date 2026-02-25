@@ -5,6 +5,7 @@ import CardToy from '@/components/Toys/CardToy.vue';
 import ToyFormDialog from '@/components/Toys/ToyFormDialog.vue';
 import { Button } from '@/components/ui/button';
 import Layout from '@/layouts/Layout.vue';
+import type { Child } from '@/types/child';
 import type { Toy } from '@/types/toy';
 
 const isDialogOpen = ref(false);
@@ -16,7 +17,7 @@ const initialData = ref({
 });
 
 defineProps<{
-    child?: any;
+    child: Child;
     toys: Toy[];
 }>();
 
@@ -31,6 +32,12 @@ const handleEditClick = (toy: Toy) => {
 };
 
 const handleDialogOpen = () => {
+    editMode.value = false;
+    toyId.value = null;
+    initialData.value = {
+        name: '',
+        description: '',
+    };
     isDialogOpen.value = true;
 };
 </script>

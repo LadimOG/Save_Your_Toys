@@ -2,13 +2,11 @@
 import { Link, router } from '@inertiajs/vue3';
 import { Shapes, Trash2 } from 'lucide-vue-next';
 import { route } from 'ziggy-js';
+import type { Child } from '../../types/child';
 import { SidebarMenuItem, SidebarMenuButton } from '../ui/sidebar';
 
 const props = defineProps<{
-    child: {
-        name: string;
-        id: number;
-    };
+    child: Child;
 }>();
 
 const handleDelete = (id: number) => {

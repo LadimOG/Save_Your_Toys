@@ -1,4 +1,4 @@
-export interface child {
+export interface Child {
     name: string;
     id: number;
 }

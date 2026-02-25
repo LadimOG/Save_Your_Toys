@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import Layout from '@/layouts/Layout.vue';
+import type { Child } from '@/types/child';
 
 defineProps<{
-    child?: any;
+    child: Child;
 }>();
 </script>
 

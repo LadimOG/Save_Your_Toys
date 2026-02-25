@@ -31,8 +31,6 @@ const page = usePage();
 
 const childList = computed(() => page.props.children as any[]);
 
-console.log(page.url);
-
 watch(
     () => page.url,
     (newPath) => {
