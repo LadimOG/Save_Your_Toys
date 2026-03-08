@@ -76,6 +76,9 @@ class ChildController extends Controller
      */
     public function destroy(Child $child)
     {
+        $child->toys->each(function ($toy) {
+            $toy->delete();
+        });
         $child->delete();
         return redirect()->to('dashboard')->with('success', "Votre enfant a bien été suprimer");
     }

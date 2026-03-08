@@ -25,6 +25,16 @@ class Toy extends Model
         );
     }
 
+    protected static function booted()
+    {
+        static::deleted(function ($toy) {
+            $path = $toy->getRawOriginal('image_path');
+            if ($path) {
+                Storage::disk('public')->delete($path);
+            }
+        });
+    }
+
     public function child()
     {
         return $this->belongsTo(Child::class);
