@@ -24,7 +24,7 @@ const handleDelete = (id: number) => {
                 class="flex w-full items-center"
             >
                 <Shapes class="mr-2 size-4" />
-                <span class="first-letter:uppercase">{{ child.name }}</span>
+                <span>{{ child.name }}</span>
 
                 <Trash2
                     @click.stop.prevent="handleDelete(child.id)"

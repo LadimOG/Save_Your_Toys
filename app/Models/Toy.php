@@ -18,6 +18,13 @@ class Toy extends Model
         'child_id'
     ];
 
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => ucfirst($value)
+        );
+    }
+
     protected function imagePath(): Attribute
     {
         return Attribute::make(
