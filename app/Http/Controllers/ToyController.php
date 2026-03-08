@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Child;
 use App\Models\Toy;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Inertia\Inertia;
 
-use Intervention\Image\Laravel\Facades\Image;
+use Inertia\Inertia;
 
 class ToyController extends Controller
 {
@@ -28,7 +28,7 @@ class ToyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, ImageService $imageService)
     {
 
         $validated = $request->validate([
@@ -46,22 +46,11 @@ class ToyController extends Controller
         $toyData = collect($validated)->except('image')->toArray();
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
 
-            //destination et nom de l'image
-            $fileName = 'toys/' . uniqid() . '.webp';
-
-            //compression de l'image
-            $compressedImage = Image::read($file)->scale(width: 1000)->toWebp(60);
-
-            //enregistrement de l'image'
-            Storage::disk('public')->put($fileName, $compressedImage);
-
-            //ajout du chemin pour la bd
-            $toyData['image_path'] = '/storage/' . $fileName;
+            $toyData['image_path'] = $imageService->imageCompression($request->file('image'), 'toys');
         }
 
-        //stockage du titre description et le chemin de l'image dans la db
+        //stockage du titre, description et le chemin de l'image dans la db
         Toy::create($toyData);
 
         return redirect()->back()->with("success", "Votre jouet a été ajouté!");
@@ -89,7 +78,7 @@ class ToyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Toy $toy)
+    public function update(Request $request, Toy $toy, ImageService $imageService)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -97,15 +86,16 @@ class ToyController extends Controller
             'image' => 'nullable|image|max:2048'
         ]);
 
-        $updateData =
-            [
-                'name' => $validated['name'],
-                'description' => $validated['description']
-            ];
+        $updateData = collect($validated)->except('image')->toArray();
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('toys', 'public');
-            $updateData['image_path'] = '/storage/' . $path;
+
+            if ($toy->image_path && !str_contains($toy->image_path, 'default-toy.png')) {
+                //Suppression de l'ancienne image sur le disque du serveur
+                Storage::disk('public')->delete($toy->getRawOriginal('image_path'));
+            }
+
+            $updateData['image_path'] = $imageService->imageCompression($request->file('image'), 'toys');
         }
         $toy->update($updateData);
 

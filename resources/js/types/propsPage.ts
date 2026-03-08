@@ -1,5 +1,11 @@
+export interface FlashMessages {
+    success: string | null;
+    error: string | null;
+}
+
 export interface PropsPage {
-    flash: {
-        success: string | null;
-    };
+    auth: { user: any };
+    name: string;
+    flash: FlashMessages;
+    [key: string]: any;
 }

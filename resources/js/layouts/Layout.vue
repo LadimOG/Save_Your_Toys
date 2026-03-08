@@ -8,16 +8,18 @@ import {
     SidebarInset,
     SidebarTrigger,
 } from '@/components/ui/sidebar';
-import 'vue-sonner/style.css';
 
-const page = usePage();
+import 'vue-sonner/style.css';
+import type { AppPageProps } from '@/types';
+
+const page = usePage<AppPageProps>();
 
 watch(
     () => page.props.flash,
-    (flash: any) => {
+    (flash) => {
         if (flash?.success) {
             setTimeout(() => {
-                toast.success(flash.success);
+                toast.success(flash.success as string);
             }, 100);
         }
     },
