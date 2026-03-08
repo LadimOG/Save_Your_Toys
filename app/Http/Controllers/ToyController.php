@@ -108,8 +108,11 @@ class ToyController extends Controller
     public function destroy(Toy $toy)
     {
         if ($toy->image_path) {
-            $path = str_replace('/storage/', '', $toy->image_path);
-            Storage::disk('public')->delete($path);
+            $path = $toy->getRawOriginal('image_path');
+
+            if ($path) {
+                Storage::disk('public')->delete($path);
+            }
         }
         $toy->delete();
         return redirect()->back()->with('success', 'Le jouet a été bien supprimé');

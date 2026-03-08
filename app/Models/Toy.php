@@ -18,7 +18,7 @@ class Toy extends Model
         'child_id'
     ];
 
-    public function imagePath(): Attribute
+    protected function imagePath(): Attribute
     {
         return Attribute::make(
             get: fn($value) => $value ? Storage::url($value) : null
